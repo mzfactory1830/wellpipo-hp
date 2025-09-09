@@ -7,9 +7,10 @@ import MarkdownRenderer from "@/components/MarkdownRenderer"
 export default async function NewsDetailPage({
   params
 }: {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }) {
-  const newsItem = await getNewsBySlug(params.slug)
+  const { slug } = await params
+  const newsItem = await getNewsBySlug(slug)
   
   if (!newsItem) {
     notFound()

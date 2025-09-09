@@ -28,15 +28,16 @@ export async function generateStaticParams() {
 export default async function NewsCategoryPage({
   params,
 }: {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }) {
+  const { slug } = await params
   const supabase = await createClient()
   
   // カテゴリを取得
   const { data: category, error: categoryError } = await supabase
     .from('categories')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single()
   
   if (categoryError || !category) {
