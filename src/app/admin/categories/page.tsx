@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import { checkAdminAccess } from "@/utils/supabase/admin"
 import Link from "next/link"
-import DeleteCategoryButton from "./DeleteCategoryButton"
+import DeleteCategoryButton from "../../../components/DeleteCategoryButton"
 
 export default async function CategoriesPage() {
   const supabase = await createClient()

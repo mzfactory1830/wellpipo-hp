@@ -1,9 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
-import MarkdownEditor from '@/components/MarkdownEditor'
+import dynamic from 'next/dynamic'
+
+// BlockNoteEditorを動的インポート（クライアントサイドのみ）
+const BlockNoteEditor = dynamic(() => import('@/components/BlockNoteEditor'), {
+  ssr: false,
+  loading: () => (
+    <div className="border border-gray-300 rounded-md p-8 text-center text-gray-500">
+      エディターを読み込み中...
+    </div>
+  ),
+})
 
 interface Category {
   id: string
@@ -233,10 +243,10 @@ export default function NewsForm({ categories, news }: NewsFormProps) {
         <label htmlFor="content" className="block text-sm font-medium text-gray-800 mb-2">
           本文 <span className="text-red-500">*</span>
         </label>
-        <MarkdownEditor
+        <BlockNoteEditor
           value={content}
           onChange={setContent}
-          placeholder="マークダウンで記事を書いてください..."
+          placeholder="記事を書き始める..."
         />
       </div>
 

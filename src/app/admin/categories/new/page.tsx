@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import { checkAdminAccess } from "@/utils/supabase/admin"
-import CategoryForm from "../CategoryForm"
+import CategoryForm from "../../../../components/CategoryForm"
 
 export default async function NewCategoryPage() {
   const supabase = await createClient()
