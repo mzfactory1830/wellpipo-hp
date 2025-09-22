@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import ScrollLink from './ScrollLink'
 
 export default function Header() {
@@ -16,7 +15,9 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center">
-            <Image src="/logo.svg" alt="株式会社ウェルピポ" width={180} height={54} priority />
+            <h1 className="font-[family-name:var(--font-comfortaa)] text-4xl font-bold text-gray-700">
+              wellpipo
+            </h1>
           </Link>
 
           <nav className="hidden space-x-6 lg:flex xl:space-x-8">

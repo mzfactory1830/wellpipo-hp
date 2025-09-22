@@ -33,7 +33,7 @@ function AdminLoginContent() {
       if (error) {
         setError(error.message)
       }
-    } catch (err) {
+    } catch {
       setError('ログインに失敗しました')
     } finally {
       setLoading(false)
