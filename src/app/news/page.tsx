@@ -21,7 +21,16 @@ export default async function NewsPage({
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <section className="relative overflow-hidden py-32">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-orange-50"></div>
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(/bg_pattern_01.png)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '400px 400px',
+            backgroundBlendMode: 'multiply',
+            opacity: 0.15,
+          }}
+        ></div>
         <div className="absolute top-20 right-20 h-32 w-32 rounded-full bg-gradient-to-br from-blue-200/20 to-blue-300/10 blur-2xl"></div>
         <div className="absolute bottom-20 left-20 h-24 w-24 rounded-full bg-gradient-to-br from-orange-200/20 to-orange-300/10 blur-xl"></div>
 

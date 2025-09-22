@@ -110,8 +110,17 @@ export default async function HomePage() {
       </section>
 
       {/* お知らせ Section */}
-      <section className="bg-gradient-to-b from-white to-blue-50/30 py-24">
-        <div className="container mx-auto px-4">
+      <section className="relative py-24" style={{ backgroundColor: '#fff' }}>
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(/bg_pattern_01.png)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '20px 20px',
+            opacity: 0.5,
+          }}
+        ></div>
+        <div className="relative z-10 container mx-auto px-4">
           <div className="mb-16 text-center">
             <div className="mb-4 inline-block rounded-full border border-blue-200/50 bg-blue-100/80 px-4 py-2 text-sm font-medium text-blue-800">
               📰 最新情報

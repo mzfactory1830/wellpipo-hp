@@ -1,7 +1,21 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import ScrollLink from './ScrollLink'
 
 export default function Header() {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const menuItems = [
     { href: '/#about', label: 'ウェルピポについて', isScroll: true },
     { href: '/#greeting', label: 'ご挨拶', isScroll: true },
@@ -11,11 +25,19 @@ export default function Header() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-md">
+    <header
+      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
+      }`}
+    >
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center">
-            <h1 className="font-[family-name:var(--font-comfortaa)] text-4xl font-bold text-gray-700">
+            <h1
+              className={`font-[family-name:var(--font-comfortaa)] text-4xl font-bold transition-colors duration-300 ${
+                isScrolled ? 'text-gray-700' : 'text-gray-700'
+              }`}
+            >
               wellpipo
             </h1>
           </Link>
@@ -26,7 +48,11 @@ export default function Header() {
                 <ScrollLink
                   key={item.href}
                   href={item.href}
-                  className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 xl:text-base"
+                  className={`text-sm font-medium transition-colors xl:text-base ${
+                    isScrolled
+                      ? 'text-gray-700 hover:text-blue-600'
+                      : 'text-gray-700 hover:text-blue-600'
+                  }`}
                 >
                   {item.label}
                 </ScrollLink>
@@ -34,7 +60,11 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 xl:text-base"
+                  className={`text-sm font-medium transition-colors xl:text-base ${
+                    isScrolled
+                      ? 'text-gray-700 hover:text-blue-600'
+                      : 'text-gray-700 hover:text-blue-600'
+                  }`}
                 >
                   {item.label}
                 </Link>
