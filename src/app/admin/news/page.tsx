@@ -1,74 +1,74 @@
-import Link from "next/link"
-import { createClient } from "@/utils/supabase/server"
-import { redirect } from "next/navigation"
-import { checkAdminAccess } from "@/utils/supabase/admin"
-import DeleteNewsButton from "../../../components/DeleteNewsButton"
+import Link from 'next/link'
+import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation'
+import { checkAdminAccess } from '@/utils/supabase/admin'
+import DeleteNewsButton from '../../../components/DeleteNewsButton'
 
-export default async function AdminNewsPage({
-  searchParams
-}: {
-  searchParams: { page?: string }
-}) {
-  const page = parseInt(searchParams.page || "1")
+export default async function AdminNewsPage({ searchParams }: { searchParams: { page?: string } }) {
+  const page = parseInt(searchParams.page || '1')
   const perPage = 20
   const from = (page - 1) * perPage
   const to = from + perPage - 1
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/")
+    redirect('/')
   }
 
   const isAdmin = await checkAdminAccess()
   if (!isAdmin) {
-    redirect("/")
+    redirect('/')
   }
-  
+
   // 全てのお知らせを取得（公開・非公開含む）
   const { data: news, count } = await supabase
     .from('news')
-    .select(`
+    .select(
+      `
       *,
       category:categories(*)
-    `, { count: 'exact' })
+    `,
+      { count: 'exact' }
+    )
     .order('created_at', { ascending: false })
     .range(from, to)
 
   const totalPages = Math.ceil((count || 0) / perPage)
 
-
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-medium text-gray-800">お知らせ管理</h1>
         <Link
           href="/admin/news/new"
-          className="px-6 py-2 bg-[#5fbcd4] text-white font-medium rounded-md hover:bg-[#4a9bb5] transition-colors"
+          className="rounded-md bg-[#5fbcd4] px-6 py-2 font-medium text-white transition-colors hover:bg-[#4a9bb5]"
         >
           新規作成
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg border bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b">
+            <thead className="border-b bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                   タイトル
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                   カテゴリ
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                   ステータス
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                   作成日
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase">
                   アクション
                 </th>
               </tr>
@@ -79,17 +79,13 @@ export default async function AdminNewsPage({
                   <tr key={item.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {item.title}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          /news/{item.slug}
-                        </div>
+                        <div className="text-sm font-medium text-gray-900">{item.title}</div>
+                        <div className="text-sm text-gray-500">/news/{item.slug}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       {item.category ? (
-                        <span className="px-2 py-1 text-xs bg-[#f8bf79] text-white rounded">
+                        <span className="rounded bg-[#f8bf79] px-2 py-1 text-xs text-white">
                           {item.category.name}
                         </span>
                       ) : (
@@ -97,12 +93,12 @@ export default async function AdminNewsPage({
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      {item.is_published ? (
-                        <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
+                      {item.published ? (
+                        <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-800">
                           公開中
                         </span>
                       ) : (
-                        <span className="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded">
+                        <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-800">
                           下書き
                         </span>
                       )}
@@ -143,34 +139,34 @@ export default async function AdminNewsPage({
 
         {/* ページネーション */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t flex justify-center gap-2">
+          <div className="flex justify-center gap-2 border-t px-6 py-4">
             {page > 1 && (
               <Link
                 href={`/admin/news?page=${page - 1}`}
-                className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors rounded"
+                className="rounded border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
               >
                 前へ
               </Link>
             )}
-            
+
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
               <Link
                 key={pageNum}
                 href={`/admin/news?page=${pageNum}`}
-                className={`px-4 py-2 border transition-colors rounded ${
+                className={`rounded border px-4 py-2 transition-colors ${
                   pageNum === page
-                    ? 'bg-[#5fbcd4] text-white border-[#5fbcd4]'
+                    ? 'border-[#5fbcd4] bg-[#5fbcd4] text-white'
                     : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 }`}
               >
                 {pageNum}
               </Link>
             ))}
-            
+
             {page < totalPages && (
               <Link
                 href={`/admin/news?page=${page + 1}`}
-                className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors rounded"
+                className="rounded border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
               >
                 次へ
               </Link>

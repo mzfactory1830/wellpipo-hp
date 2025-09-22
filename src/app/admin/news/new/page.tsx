@@ -1,30 +1,29 @@
-import { createClient } from "@/utils/supabase/server"
-import { redirect } from "next/navigation"
-import { checkAdminAccess } from "@/utils/supabase/admin"
-import NewsForm from "../../../../components/NewsForm"
+import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation'
+import { checkAdminAccess } from '@/utils/supabase/admin'
+import NewsForm from '../../../../components/NewsForm'
 
 export default async function NewNewsPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/")
+    redirect('/')
   }
 
   const isAdmin = await checkAdminAccess()
   if (!isAdmin) {
-    redirect("/")
+    redirect('/')
   }
 
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('*')
-    .order('name')
+  const { data: categories } = await supabase.from('categories').select('*').order('name')
 
   return (
     <div>
-      <h1 className="text-2xl font-medium text-gray-800 mb-8">新規お知らせ作成</h1>
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <h1 className="mb-8 text-2xl font-medium text-gray-800">新規お知らせ作成</h1>
+      <div className="rounded-lg border bg-white p-6 shadow-sm">
         <NewsForm categories={categories || []} />
       </div>
     </div>

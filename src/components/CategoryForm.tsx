@@ -55,7 +55,7 @@ export default function CategoryForm({ category }: CategoryFormProps) {
         .update({
           name: name.trim(),
           slug: slug.trim(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', category.id)
 
@@ -68,12 +68,10 @@ export default function CategoryForm({ category }: CategoryFormProps) {
       }
     } else {
       // 新規作成
-      const { error } = await supabase
-        .from('categories')
-        .insert({
-          name: name.trim(),
-          slug: slug.trim()
-        })
+      const { error } = await supabase.from('categories').insert({
+        name: name.trim(),
+        slug: slug.trim(),
+      })
 
       if (error) {
         if (error.code === '23505') {
@@ -94,13 +92,11 @@ export default function CategoryForm({ category }: CategoryFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-md">
-          {error}
-        </div>
+        <div className="rounded-md border border-red-200 bg-red-50 p-4 text-red-600">{error}</div>
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700">
           カテゴリ名 <span className="text-red-500">*</span>
         </label>
         <input
@@ -108,14 +104,14 @@ export default function CategoryForm({ category }: CategoryFormProps) {
           id="name"
           value={name}
           onChange={handleNameChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5fbcd4] focus:border-transparent"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-[#5fbcd4] focus:outline-none"
           placeholder="例: お知らせ"
           required
         />
       </div>
 
       <div>
-        <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="slug" className="mb-2 block text-sm font-medium text-gray-700">
           スラッグ <span className="text-red-500">*</span>
         </label>
         <input
@@ -123,7 +119,7 @@ export default function CategoryForm({ category }: CategoryFormProps) {
           id="slug"
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5fbcd4] focus:border-transparent"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-[#5fbcd4] focus:outline-none"
           placeholder="例: news"
           pattern="[a-z0-9-]+"
           title="小文字の英数字とハイフンのみ使用可能です"
@@ -138,14 +134,14 @@ export default function CategoryForm({ category }: CategoryFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-3 bg-[#5fbcd4] text-white font-medium rounded-md hover:bg-[#4a9bb5] transition-colors disabled:opacity-50"
+          className="rounded-md bg-[#5fbcd4] px-6 py-3 font-medium text-white transition-colors hover:bg-[#4a9bb5] disabled:opacity-50"
         >
           {isSubmitting ? '保存中...' : category ? '更新する' : '作成する'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/admin/categories')}
-          className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 transition-colors"
+          className="rounded-md border border-gray-300 px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50"
         >
           キャンセル
         </button>

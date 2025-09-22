@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import "@blocknote/core/fonts/inter.css"
-import { Block, BlockNoteEditor, PartialBlock } from "@blocknote/core"
-import { useCreateBlockNote } from "@blocknote/react"
-import { BlockNoteView } from "@blocknote/mantine"
-import "@blocknote/mantine/style.css"
+import '@blocknote/core/fonts/inter.css'
+import { Block, BlockNoteEditor, PartialBlock } from '@blocknote/core'
+import { useCreateBlockNote } from '@blocknote/react'
+import { BlockNoteView } from '@blocknote/mantine'
+import '@blocknote/mantine/style.css'
 import { createClient } from '@/utils/supabase/client'
 
 interface BlockNoteEditorProps {
@@ -15,11 +15,11 @@ interface BlockNoteEditorProps {
   editable?: boolean
 }
 
-export default function BlockNoteEditorComponent({ 
-  value, 
-  onChange, 
-  placeholder = "記事を書き始める...", 
-  editable = true 
+export default function BlockNoteEditorComponent({
+  value,
+  onChange,
+  placeholder = '記事を書き始める...',
+  editable = true,
 }: BlockNoteEditorProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [initialContent, setInitialContent] = useState<PartialBlock[] | undefined>(undefined)
@@ -45,7 +45,7 @@ export default function BlockNoteEditorComponent({
   // 画像アップロード処理
   const uploadFile = async (file: File): Promise<string> => {
     setIsUploading(true)
-    
+
     try {
       // ファイルサイズチェック（5MB以下）
       if (file.size > 5 * 1024 * 1024) {
@@ -76,9 +76,9 @@ export default function BlockNoteEditorComponent({
       }
 
       // 公開URLを取得
-      const { data: { publicUrl } } = supabase.storage
-        .from('news-content')
-        .getPublicUrl(filePath)
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('news-content').getPublicUrl(filePath)
 
       return publicUrl
     } catch (error) {
@@ -114,15 +114,15 @@ export default function BlockNoteEditorComponent({
 
   return (
     <div className="blocknote-wrapper">
-      <BlockNoteView 
-        editor={editor} 
+      <BlockNoteView
+        editor={editor}
         editable={editable}
         onChange={handleChange}
         theme="light"
         data-theming-css-variables-theme="light"
       />
       {isUploading && (
-        <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
+        <div className="fixed right-4 bottom-4 rounded-lg bg-gray-800 px-4 py-2 text-white shadow-lg">
           画像をアップロード中...
         </div>
       )}
@@ -130,13 +130,13 @@ export default function BlockNoteEditorComponent({
         .blocknote-wrapper {
           min-height: 500px;
         }
-        
+
         .blocknote-wrapper .bn-container {
           border: 1px solid #e5e7eb;
           border-radius: 0.5rem;
           background: white;
         }
-        
+
         .blocknote-wrapper .bn-editor {
           min-height: 400px;
           padding: 1rem;
@@ -168,7 +168,7 @@ export default function BlockNoteEditorComponent({
         }
 
         /* プレースホルダーのスタイル */
-        .blocknote-wrapper [data-is-empty="true"]:before {
+        .blocknote-wrapper [data-is-empty='true']:before {
           content: attr(data-placeholder);
           color: #9ca3af;
           pointer-events: none;

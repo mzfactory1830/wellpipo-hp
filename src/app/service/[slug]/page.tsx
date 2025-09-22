@@ -1,6 +1,9 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+// 静的コンテンツなので長い間隔で再検証
+export const revalidate = 3600 // 1時間
+
 const services = {
   consulting: {
     title: "コンサルティング",
@@ -106,12 +109,13 @@ export async function generateStaticParams() {
   }))
 }
 
-export default function ServiceDetailPage({
+export default async function ServiceDetailPage({
   params,
 }: {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }) {
-  const service = services[params.slug as keyof typeof services]
+  const { slug } = await params
+  const service = services[slug as keyof typeof services]
   
   if (!service) {
     notFound()
@@ -149,63 +153,108 @@ export default function ServiceDetailPage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="mb-8">
-        <Link 
-          href="/service"
-          className="text-blue-600 hover:underline text-sm"
-        >
-          ← サービス一覧
-        </Link>
-      </div>
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-50/50 to-white overflow-hidden">
+      <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-cyan-300/10 rounded-full blur-2xl"></div>
+      <div className="absolute bottom-32 left-20 w-40 h-40 bg-gradient-to-br from-orange-200/20 to-pink-300/10 rounded-full blur-2xl"></div>
+      
+      <div className="relative container mx-auto px-4 py-16 z-10">
+        <div className="mb-12">
+          <Link 
+            href="/service"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm text-blue-600 hover:text-blue-700 rounded-2xl border border-blue-200/50 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            サービス一覧
+          </Link>
+        </div>
 
-      <div className="max-w-5xl mx-auto">
-        <header className="text-center mb-12">
-          <div className={`inline-flex p-4 rounded-full mb-6 ${colorClasses[service.color as keyof typeof colorClasses]}`}>
-            {getIcon()}
-          </div>
-          <h1 className="text-4xl font-bold mb-4">{service.title}</h1>
-          <p className="text-xl text-gray-600">{service.description}</p>
-        </header>
+        <div className="max-w-6xl mx-auto">
+          <header className="text-center mb-16">
+            <div className={`inline-flex p-6 rounded-3xl mb-8 shadow-lg ${colorClasses[service.color as keyof typeof colorClasses]} bg-opacity-20 backdrop-blur-sm border border-white/50`}>
+              {getIcon()}
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">{service.title}</h1>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100/50 max-w-3xl mx-auto">
+              <p className="text-xl md:text-2xl text-gray-700 leading-relaxed">{service.description}</p>
+            </div>
+          </header>
 
-        <section className="mb-12">
-          <p className="text-lg text-gray-700 leading-relaxed whitespace-pre-line">
-            {service.details.trim()}
-          </p>
-        </section>
+          <section className="mb-16">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-gray-100/50">
+              <p className="text-lg md:text-xl text-gray-700 leading-relaxed whitespace-pre-line">
+                {service.details.trim()}
+              </p>
+            </div>
+          </section>
 
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">提供サービス</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {service.features.map((feature, index) => (
-              <div key={index} className="flex items-center">
-                <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="text-gray-700">{feature}</span>
+          <section className="mb-16">
+            <div className="text-center mb-10">
+              <div className="inline-block px-4 py-2 bg-green-100/80 backdrop-blur-sm text-green-800 text-sm font-medium rounded-full mb-4 border border-green-200/50">
+                ✨ Features
               </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">選ばれる理由</h2>
-          <div className="space-y-6">
-            {service.benefits.map((benefit, index) => (
-              <div key={index} className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-                <p className="text-gray-700">{benefit.description}</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">提供サービス</h2>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-gray-100/50">
+              <div className="grid md:grid-cols-2 gap-6">
+                {service.features.map((feature, index) => (
+                  <div key={index} className="flex items-center p-4 bg-gradient-to-r from-green-50/50 to-teal-50/50 rounded-2xl border border-green-100/50">
+                    <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-400 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-800 font-medium">{feature}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+          </section>
 
-        <section className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">お問い合わせ</h2>
-          <p className="mb-6">
+          <section className="mb-16">
+            <div className="text-center mb-10">
+              <div className="inline-block px-4 py-2 bg-purple-100/80 backdrop-blur-sm text-purple-800 text-sm font-medium rounded-full mb-4 border border-purple-200/50">
+                🏆 Why Choose Us
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">選ばれる理由</h2>
+            </div>
+            <div className="space-y-8">
+              {service.benefits.map((benefit, index) => (
+                <div key={index} className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0">
+                      <div className={`w-12 h-12 bg-gradient-to-br ${
+                        index === 0 ? 'from-blue-500 to-cyan-400' :
+                        index === 1 ? 'from-orange-500 to-pink-400' :
+                        'from-green-500 to-teal-400'
+                      } rounded-2xl flex items-center justify-center text-white font-bold text-lg`}>
+                        {index + 1}
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold mb-3 text-gray-900">{benefit.title}</h3>
+                      <p className="text-lg text-gray-700 leading-relaxed">{benefit.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+        <section className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-3xl p-10 text-center shadow-xl">
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+          </div>
+          <h2 className="text-3xl font-bold mb-6">お問い合わせ</h2>
+          <p className="mb-8 text-xl opacity-90">
             {service.title}サービスについて、詳しくはお問い合わせください
           </p>
-          <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+          <button className="bg-white text-blue-600 px-10 py-4 rounded-2xl font-semibold hover:bg-gray-100 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-lg">
             お問い合わせはこちら
           </button>
         </section>

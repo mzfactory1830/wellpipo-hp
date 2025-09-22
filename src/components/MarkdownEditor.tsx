@@ -62,9 +62,9 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
       }
 
       // 公開URLを取得
-      const { data: { publicUrl } } = supabase.storage
-        .from('news-content')
-        .getPublicUrl(filePath)
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('news-content').getPublicUrl(filePath)
 
       // カーソル位置に画像マークダウンを挿入
       if (textareaRef.current) {
@@ -73,10 +73,10 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
         const end = textarea.selectionEnd
         const text = textarea.value
         const imageMarkdown = `![${file.name}](${publicUrl})`
-        
+
         const newText = text.substring(0, start) + imageMarkdown + text.substring(end)
         onChange(newText)
-        
+
         // カーソル位置を画像マークダウンの後に設定
         setTimeout(() => {
           textarea.selectionStart = textarea.selectionEnd = start + imageMarkdown.length
@@ -94,17 +94,22 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
     }
   }
 
-  const insertMarkdown = (prefix: string, suffix: string = '', defaultText: string = 'テキスト') => {
+  const insertMarkdown = (
+    prefix: string,
+    suffix: string = '',
+    defaultText: string = 'テキスト'
+  ) => {
     if (textareaRef.current) {
       const textarea = textareaRef.current
       const start = textarea.selectionStart
       const end = textarea.selectionEnd
       const text = textarea.value
       const selectedText = text.substring(start, end) || defaultText
-      
-      const newText = text.substring(0, start) + prefix + selectedText + suffix + text.substring(end)
+
+      const newText =
+        text.substring(0, start) + prefix + selectedText + suffix + text.substring(end)
       onChange(newText)
-      
+
       // カーソル位置を調整
       setTimeout(() => {
         textarea.selectionStart = start + prefix.length
@@ -121,14 +126,14 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
   }
 
   return (
-    <div className="border border-gray-300 rounded-md overflow-hidden">
+    <div className="overflow-hidden rounded-md border border-gray-300">
       {/* ツールバー */}
-      <div className="bg-gray-50 border-b border-gray-300 p-2 flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-gray-300 bg-gray-50 p-2">
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => insertMarkdown('**', '**')}
-            className="px-3 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors font-bold"
+            className="rounded px-3 py-1 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-200"
             title="太字"
           >
             B
@@ -136,7 +141,7 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
           <button
             type="button"
             onClick={() => insertMarkdown('*', '*')}
-            className="px-3 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors italic"
+            className="rounded px-3 py-1 text-sm text-gray-700 italic transition-colors hover:bg-gray-200"
             title="斜体"
           >
             I
@@ -145,36 +150,41 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
             <button
               type="button"
               onClick={() => setShowHeadingMenu(!showHeadingMenu)}
-              className="px-3 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors font-semibold flex items-center gap-1"
+              className="flex items-center gap-1 rounded px-3 py-1 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
               title="見出し"
             >
               H
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
             {showHeadingMenu && (
-              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded w-40 shadow-lg z-10">
+              <div className="absolute top-full left-0 z-10 mt-1 w-40 rounded border border-gray-300 bg-white shadow-lg">
                 <button
                   type="button"
                   onClick={() => insertHeading(2)}
                   className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  <span className="font-semibold text-lg">H2 大見出し</span>
+                  <span className="text-lg font-semibold">H2 大見出し</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => insertHeading(3)}
                   className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  <span className="font-semibold text-base">H3 中見出し</span>
+                  <span className="text-base font-semibold">H3 中見出し</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => insertHeading(4)}
                   className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  <span className="font-semibold text-sm">H4 小見出し</span>
+                  <span className="text-sm font-semibold">H4 小見出し</span>
                 </button>
               </div>
             )}
@@ -182,7 +192,7 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
           <button
             type="button"
             onClick={() => insertMarkdown('- ')}
-            className="px-3 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors"
+            className="rounded px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-200"
             title="リスト"
           >
             ≡
@@ -190,7 +200,7 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
           <button
             type="button"
             onClick={() => insertMarkdown('[', '](url)')}
-            className="px-3 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors"
+            className="rounded px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-200"
             title="リンク"
           >
             🔗
@@ -198,7 +208,7 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
           <button
             type="button"
             onClick={() => insertMarkdown('> ', '', '引用文')}
-            className="px-3 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors"
+            className="rounded px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-200"
             title="引用"
           >
             ❝
@@ -206,17 +216,17 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
           <button
             type="button"
             onClick={() => insertMarkdown('```javascript\n', '\n```', '// コードをここに記述')}
-            className="px-3 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors"
+            className="rounded px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-200"
             title="コードブロック"
           >
             {'</>'}
           </button>
-          <div className="w-px h-6 bg-gray-300 mx-1" />
+          <div className="mx-1 h-6 w-px bg-gray-300" />
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="px-3 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors disabled:opacity-50"
+            className="rounded px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-200 disabled:opacity-50"
             title="画像を挿入"
           >
             {isUploading ? '📤' : '📷'} 画像
@@ -233,7 +243,7 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
           <button
             type="button"
             onClick={() => setIsPreview(false)}
-            className={`px-3 py-1 text-sm rounded transition-colors ${
+            className={`rounded px-3 py-1 text-sm transition-colors ${
               !isPreview ? 'bg-[#5fbcd4] text-white' : 'text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -242,7 +252,7 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
           <button
             type="button"
             onClick={() => setIsPreview(true)}
-            className={`px-3 py-1 text-sm rounded transition-colors ${
+            className={`rounded px-3 py-1 text-sm transition-colors ${
               isPreview ? 'bg-[#5fbcd4] text-white' : 'text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -254,7 +264,7 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
       {/* エディタ/プレビュー */}
       <div className="min-h-[400px]">
         {isPreview ? (
-          <div className="p-4 prose prose-sm max-w-none prose-gray">
+          <div className="prose prose-sm prose-gray max-w-none p-4">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {value || '*ここにプレビューが表示されます*'}
             </ReactMarkdown>
@@ -265,7 +275,7 @@ export default function MarkdownEditor({ value, onChange, placeholder }: Markdow
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder || 'マークダウンで記事を書いてください...'}
-            className="w-full p-4 min-h-[400px] resize-y focus:outline-none text-gray-900 placeholder-gray-500"
+            className="min-h-[400px] w-full resize-y p-4 text-gray-900 placeholder-gray-500 focus:outline-none"
           />
         )}
       </div>

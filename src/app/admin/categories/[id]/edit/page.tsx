@@ -1,25 +1,28 @@
-import { createClient } from "@/utils/supabase/server"
-import { redirect } from "next/navigation"
-import { checkAdminAccess } from "@/utils/supabase/admin"
-import CategoryForm from "../../../../../components/CategoryForm"
+import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation'
+import { checkAdminAccess } from '@/utils/supabase/admin'
+import CategoryForm from '../../../../../components/CategoryForm'
 
-export default async function EditCategoryPage({ params }: { params: { id: string } }) {
+export default async function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/")
+    redirect('/')
   }
 
   const isAdmin = await checkAdminAccess()
   if (!isAdmin) {
-    redirect("/")
+    redirect('/')
   }
 
   const { data: category, error } = await supabase
     .from('categories')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !category) {
@@ -28,8 +31,8 @@ export default async function EditCategoryPage({ params }: { params: { id: strin
 
   return (
     <div>
-      <h1 className="text-2xl font-medium text-gray-800 mb-8">カテゴリ編集</h1>
-      <div className="bg-white rounded-lg shadow-sm border p-6 max-w-2xl">
+      <h1 className="mb-8 text-2xl font-medium text-gray-800">カテゴリ編集</h1>
+      <div className="max-w-2xl rounded-lg border bg-white p-6 shadow-sm">
         <CategoryForm category={category} />
       </div>
     </div>

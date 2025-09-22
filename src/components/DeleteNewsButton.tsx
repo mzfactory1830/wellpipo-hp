@@ -20,11 +20,8 @@ export default function DeleteNewsButton({ newsId, newsTitle }: DeleteNewsButton
     }
 
     setIsDeleting(true)
-    
-    const { error } = await supabase
-      .from('news')
-      .delete()
-      .eq('id', newsId)
+
+    const { error } = await supabase.from('news').delete().eq('id', newsId)
 
     if (error) {
       console.error('Error deleting news:', error)
@@ -32,7 +29,7 @@ export default function DeleteNewsButton({ newsId, newsTitle }: DeleteNewsButton
     } else {
       router.refresh()
     }
-    
+
     setIsDeleting(false)
   }
 

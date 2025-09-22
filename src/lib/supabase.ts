@@ -44,10 +44,12 @@ export async function getNews(limit: number = 6) {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('news')
-    .select(`
+    .select(
+      `
       *,
       category:categories(*)
-    `)
+    `
+    )
     .eq('published', true)
     .order('published_at', { ascending: false })
     .limit(limit)
@@ -64,11 +66,13 @@ export async function getNewsBySlug(slug: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('news')
-    .select(`
+    .select(
+      `
       *,
       category:categories(*),
       images:news_images(*)
-    `)
+    `
+    )
     .eq('slug', slug)
     .eq('published', true)
     .single()
@@ -88,10 +92,13 @@ export async function getAllNews(page: number = 1, perPage: number = 12) {
 
   const { data, error, count } = await supabase
     .from('news')
-    .select(`
+    .select(
+      `
       *,
       category:categories(*)
-    `, { count: 'exact' })
+    `,
+      { count: 'exact' }
+    )
     .eq('published', true)
     .order('published_at', { ascending: false })
     .range(from, to)
@@ -104,7 +111,11 @@ export async function getAllNews(page: number = 1, perPage: number = 12) {
   return { news: data as News[], total: count || 0 }
 }
 
-export async function getNewsByCategory(categorySlug: string, page: number = 1, perPage: number = 12) {
+export async function getNewsByCategory(
+  categorySlug: string,
+  page: number = 1,
+  perPage: number = 12
+) {
   const supabase = await createClient()
   // First get the category
   const { data: category, error: categoryError } = await supabase
@@ -123,10 +134,13 @@ export async function getNewsByCategory(categorySlug: string, page: number = 1, 
 
   const { data, error, count } = await supabase
     .from('news')
-    .select(`
+    .select(
+      `
       *,
       category:categories(*)
-    `, { count: 'exact' })
+    `,
+      { count: 'exact' }
+    )
     .eq('published', true)
     .eq('category_id', category.id)
     .order('published_at', { ascending: false })
@@ -142,10 +156,7 @@ export async function getNewsByCategory(categorySlug: string, page: number = 1, 
 
 export async function getCategories() {
   const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .order('name')
+  const { data, error } = await supabase.from('categories').select('*').order('name')
 
   if (error) {
     console.error('Error fetching categories:', error)

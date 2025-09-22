@@ -9,22 +9,26 @@ interface DeleteCategoryButtonProps {
   categoryName: string
 }
 
-export default function DeleteCategoryButton({ categoryId, categoryName }: DeleteCategoryButtonProps) {
+export default function DeleteCategoryButton({
+  categoryId,
+  categoryName,
+}: DeleteCategoryButtonProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
   const handleDelete = async () => {
-    if (!confirm(`「${categoryName}」を削除してもよろしいですか？\n関連するお知らせのカテゴリも解除されます。`)) {
+    if (
+      !confirm(
+        `「${categoryName}」を削除してもよろしいですか？\n関連するお知らせのカテゴリも解除されます。`
+      )
+    ) {
       return
     }
 
     setIsDeleting(true)
-    
-    const { error } = await supabase
-      .from('categories')
-      .delete()
-      .eq('id', categoryId)
+
+    const { error } = await supabase.from('categories').delete().eq('id', categoryId)
 
     if (error) {
       console.error('Error deleting category:', error)
@@ -32,7 +36,7 @@ export default function DeleteCategoryButton({ categoryId, categoryName }: Delet
     } else {
       router.refresh()
     }
-    
+
     setIsDeleting(false)
   }
 
@@ -40,7 +44,7 @@ export default function DeleteCategoryButton({ categoryId, categoryName }: Delet
     <button
       onClick={handleDelete}
       disabled={isDeleting}
-      className="text-red-600 hover:opacity-70 transition-opacity disabled:opacity-50"
+      className="text-red-600 transition-opacity hover:opacity-70 disabled:opacity-50"
     >
       {isDeleting ? '削除中...' : '削除'}
     </button>

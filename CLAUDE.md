@@ -24,12 +24,14 @@ npx tsc --noEmit    # Type checking without emitting files
 ## Architecture
 
 ### Project Structure
+
 - **App Router**: Located in `src/app/` using the Next.js 15 App Router pattern
 - **Root Layout**: `src/app/layout.tsx` - Defines the HTML structure and font configuration (Geist fonts)
 - **Global Styles**: `src/app/globals.css` - Contains Tailwind CSS directives and global styles
 - **TypeScript Config**: Strict mode enabled with path alias `@/*` mapping to `./src/*`
 
 ### Key Technologies
+
 - **Next.js 15.5.2**: React framework with App Router
 - **React 19.1.0**: Latest React version with concurrent features
 - **TypeScript**: Strict mode configuration for type safety
@@ -37,6 +39,7 @@ npx tsc --noEmit    # Type checking without emitting files
 - **Turbopack**: Rust-based bundler for faster builds (enabled via --turbopack flag)
 
 ### Development Notes
+
 - The project uses ES2017 as the compilation target
 - Module resolution is set to "bundler" for optimal Next.js compatibility
 - ESLint is configured with Next.js recommended rules (core-web-vitals)

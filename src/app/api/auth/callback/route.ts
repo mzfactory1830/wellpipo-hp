@@ -14,11 +14,13 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-    
+
     if (!error) {
       // ユーザー情報を取得
-      const { data: { user } } = await supabase.auth.getUser()
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
       // 管理者権限チェック
       if (user && redirectTo?.startsWith('/admin')) {
         const hasAdminAccess = await isAdmin(user.id)
